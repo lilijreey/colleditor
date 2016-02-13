@@ -7,15 +7,17 @@ module Editor
       attr_accessor :sid
     end
 
+    def WSServer.stop
+      puts "Terminating WebSocket Server"
+      EventMachine.stop
+    end
+
+    trap("INT") { stop }
+    trap("TERM") { stop }
+
     EM.epoll
     EM.run do
-      trap("INT") { stop}
-      trap("TERM") { stop}
 
-      def stop
-        puts "Terminating WebSocket Server"
-        EventMachine.stop
-      end
 
       channle = EM::Channel.new
       puts "new Channel"
