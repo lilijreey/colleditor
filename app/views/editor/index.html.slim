@@ -1,12 +1,30 @@
-div
-  label 昵称
-  input#nick type="text/submit/hidden/button" 
+/nav.navbar.navbar-default.navbar-static-top
+/  div.container-fluid
+/    div.navbar-header
+/      button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+/        span class="sr-only" Toggle navigation
+/        span class="icon-bar"
+/        span class="icon-bar"
+/        span class="icon-bar"
+/      a class="navbar-brand" href="#" Editor
 
-  button#join data-is-join="false" data-ip="#{request.env['REMOTE_ADDR']}" 连接服务器
+/    div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1"
 
-  label 字体大小
-  input#font-size type="text/submit/hidden/button" 
+ul.nav.nav-pills
+  li
+    span.label.label-default Nick
+  li 
+    input#nick.form-control.col-2 type="text" placeholder="nick"
+  li
+    span.label.label-default FontSize
+  li 
+    input#font-size.form-control.col-2 type="text" placeholder="22"
+  li
+    button.btn.btn-default#join data-is-join="false" data-ip="#{request.host}" 连接服务器
+  li
+    button.btn.btn-default#readonly data-is-readonly="false" ReadOnly
+  li
+    button.btn.btn-default#master Master
 
-
+hr style="margin-top:0;"
 div#editor 
-  sss

@@ -6,7 +6,7 @@ $(document).ready ()->
     console.log 'doc ready'
     conn = {'isJoin':false}
     editor = ace.edit("editor")
-    editor.setTheme("ace/theme/monokai")
+    editor.setTheme("ace/theme/chrome")
     editor.getSession().setMode("ace/mode/c_cpp")
 
     editor_onchange=(e) ->
@@ -39,7 +39,7 @@ $(document).ready ()->
         btn.data('isJoin', conn.isJoin)
         btn.attr('disabled', false)
 
-    $('button#join').click ()->
+    $('button#join').click ->
         #TODO 1秒钟锁定button,方式连续点击
         $(this).attr('disabled', true)
         isJoin = $(this).data('isJoin')
@@ -52,6 +52,15 @@ $(document).ready ()->
             conn.ws= new WebSocket(url)
             ws_cb(conn.ws)
 
+    $('button#readonly').click ->
+        isReadOnly = $(this).data('isReadonly')
+        console.log("readonly click:" + isReadOnly)
+        if isReadOnly
+            $(this).removeClass('btn-primary')
+        else
+            $(this).addClass('btn-primary')
+        editor.setReadOnly(!isReadOnly)
+        $(this).data('isReadonly', !isReadOnly)
 
     # webSocket cb
     ws_cb=(ws) ->
@@ -61,11 +70,11 @@ $(document).ready ()->
             editor.getSession().on('change', editor_onchange)
             
         ws.onclose = (evt)->
-            console.log("onclose")
+            console.log("onclose" + evt.code)
             join_trigger()
 
         ws.onerror = (evt) ->
-            alert("webSocket error:" + evt)
+            alert("webSocket error:" + evt.data)
 
         ws.onmessage = (evt) ->
             editor.setValue(evt.data)
