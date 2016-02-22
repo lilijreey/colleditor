@@ -20,6 +20,7 @@ module Editor
 
 
       channle = EM::Channel.new
+      @src
       puts "new Channel"
 
       EM::WebSocket.run(host: "0.0.0.0", port: 5567, handler:Connection) do |ws|
@@ -32,15 +33,17 @@ module Editor
           #puts handshake.public_methods
           #nick = handshake.query['nick'] || "匿名"
 
-          ws.sid = channle.subscribe { |data| 
-            sid, msg = data
+          ws.sid = channle.subscribe { |sid| 
             #puts "sid:#{ws.sid} #{sid} send:#{msg} "
-            ws.send(msg) if sid !=ws.sid 
+            ws.send(@src) if sid !=ws.sid 
           }
+
+          ws.send(@src) unless @src.nil? # init src
         end
 
         ws.onmessage do |msg|
-          channle.push([ws.sid, msg])
+          @src = msg
+          channle.push(ws.sid)
         end
 
         ws.onclose do
