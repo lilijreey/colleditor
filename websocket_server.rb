@@ -3,7 +3,7 @@ require 'em-websocket'
 
 module Editor
   module WSServer
-    class Connection < EM::WebSocket::Connection
+    class EM::WebSocket::Connection
       attr_accessor :sid
     end
 
@@ -23,7 +23,7 @@ module Editor
       @src
       puts "new Channel"
 
-      EM::WebSocket.run(host: "0.0.0.0", port: 5567, handler:Connection) do |ws|
+      EM::WebSocket.run(host: "0.0.0.0", port: 5567) do |ws|
         ## 每个新的连接都会执行这个block
 
         ## 里面的都是回调
