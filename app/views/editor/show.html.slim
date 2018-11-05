@@ -1,0 +1,29 @@
+/nav.navbar.navbar-default.navbar-static-top
+/  div.container-fluid
+/    div.navbar-header
+/      button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+/        span class="sr-only" Toggle navigation
+/        span class="icon-bar"
+/        span class="icon-bar"
+/        span class="icon-bar"
+/      a class="navbar-brand" href="#" Editor
+
+/    div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1"
+
+ul.nav.nav-pills
+  li
+    span.label.label-default Nick
+  li 
+    input#nick.form-control.col-2 type="text" placeholder="nick"
+  li
+    span.label.label-default FontSize
+  li 
+    input#font-size.form-control.col-2 type="text" placeholder="22"
+  li
+    button.btn.btn-default#join data-is-join="false" data-ip="#{request.host}" 连接服务器
+  li
+    button.btn.btn-default#readonly data-is-readonly="false" ReadOnly
+
+hr style="margin-top:0;"
+p#room_id.hidden data-id=(params[:id])
+div#editor 

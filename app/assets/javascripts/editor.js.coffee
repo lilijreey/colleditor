@@ -8,6 +8,8 @@ $(document).ready ()->
     editor = ace.edit("editor")
     editor.setTheme("ace/theme/chrome")
     editor.getSession().setMode("ace/mode/c_cpp")
+    editor.$blockScrolling = Infinity
+
 
     editor_onchange=(e) ->
         if (conn.isJoin)
@@ -44,11 +46,12 @@ $(document).ready ()->
         $(this).attr('disabled', true)
         isJoin = $(this).data('isJoin')
         console.log("join:" + isJoin)
+        room_id = $('p#room_id').data('id')
         if (isJoin)
             conn.ws.close()
         else
             ip = $(this).data('ip')
-            url = encodeURI("ws://" + ip + ":5567?nick" + $('#nick').val())
+            url = encodeURI("ws://" + ip + ":5567?room_id="+room_id+"&nick=" + $('#nick').val())
             conn.ws= new WebSocket(url)
             ws_cb(conn.ws)
 

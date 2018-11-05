@@ -5,6 +5,7 @@ module Editor
   module WSServer
     class EM::WebSocket::Connection
       attr_accessor :sid
+      attr_accessor :room_id
     end
 
     def WSServer.stop
@@ -18,10 +19,9 @@ module Editor
     EM.epoll
     EM.run do
 
-
-      channle = EM::Channel.new
-      @src
-      puts "new Channel"
+      @rooms = {}
+      @rooms_code = {}
+      puts "new Channel" 
 
       EM::WebSocket.run(host: "0.0.0.0", port: 5567) do |ws|
         ## 每个新的连接都会执行这个block
@@ -31,24 +31,31 @@ module Editor
           puts "new connect"
           #ws.methods
           #puts handshake.public_methods
-          #nick = handshake.query['nick'] || "匿名"
+          ws.room_id= handshake.query['room_id']
+          room = @rooms[ws.room_id] ||=  EM::Channel.new
 
-          ws.sid = channle.subscribe { |sid| 
-            #puts "sid:#{ws.sid} #{sid} send:#{msg} "
-            ws.send(@src) if sid !=ws.sid 
+          ws.sid = room.subscribe { |sid| 
+            #puts "sid:#{ws.sid} #{sid}" 
+            ws.send(@rooms_code[ws.room_id]) if sid !=ws.sid 
           }
 
-          ws.send(@src) unless @src.nil? # init src
+          ws.send(@rooms_code[ws.room_id]) if @rooms_code.has_key?(ws.room_id) # init src
         end
 
         ws.onmessage do |msg|
-          @src = msg
-          channle.push(ws.sid)
+          @rooms_code[ws.room_id] = msg
+          @rooms[ws.room_id].push(ws.sid)
         end
 
         ws.onclose do
-          channle.unsubscribe(ws.sid)
-          #puts "on close"
+          @rooms[ws.room_id].unsubscribe(ws.sid)
+          if @rooms[ws.room_id].num_subscribers == 0
+            @rooms.delete(ws.room_id)
+            @rooms_code.delete(ws.room_id)
+            puts "delete room #{room_id}"
+          end
+
+          puts "on close"
         end
       end
     end
